@@ -2,55 +2,188 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <title>Home</title>
 
-    <!-- Latest compiled and minified CSS -->
+    <!-- Bootstrap CSS -->
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
-      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
       crossorigin="anonymous"
     />
 
+    <!-- SweetAlert2 CSS -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.16.1/sweetalert2.css"
-      integrity="sha512-fjO3Vy3QodX9c6G9AUmr6WuIaEPdGRxBjD7gjatG5gGylzYyrEq3U0q+smkG6CwIY0L8XALRFHh4KPHig0Q1ug=="
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
+
     <link rel="stylesheet" href="css/style.css" />
+
+    <!-- jQuery -->
     <script
       src="https://code.jquery.com/jquery-3.6.4.min.js"
-      integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8="
       crossorigin="anonymous"
     ></script>
+
+    <!-- Bootstrap JS + Popper -->
     <script
       src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
-      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
       crossorigin="anonymous"
     ></script>
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
-      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
       crossorigin="anonymous"
     ></script>
 
+    <!-- SweetAlert2 JS -->
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.16.1/sweetalert2.min.js"
-      integrity="sha512-LGHBR+kJ5jZSIzhhdfytPoEHzgaYuTRifq9g5l6ja6/k9NAOsAi5dQh4zQF6JIRB8cAYxTRedERUF+97/KuivQ=="
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     ></script>
-
-    <script type="text/javascript" src="js/home.js"></script>
-    <title>Profile</title>
   </head>
   <body>
-    <!-- Header will be loaded here -->
     <div id="header"></div>
-  
+
     <div class="container" id="items">
       <h1 class="mb-4">Shop Products</h1>
     </div>
+
+    <script>
+      $(document).ready(function () {
+        const url = 'http://localhost:4000/';
+        var itemCount = 0;
+
+        const getCart = () => {
+          let cart = localStorage.getItem('cart');
+          return cart ? JSON.parse(cart) : [];
+        };
+
+        const saveCart = (cart) => {
+          localStorage.setItem('cart', JSON.stringify(cart));
+        };
+
+        // Load header
+        $("#header").load("header.html");
+
+        // Fetch and render items
+        $.ajax({
+          method: "GET",
+          url: `${url}api/v1/items`,
+          dataType: 'json',
+          success: function (data) {
+            $("#items").empty();
+            let row;
+            $.each(data.rows, function (key, value) {
+              if (key % 4 === 0) {
+                row = $('<div class="row"></div>');
+                $("#items").append(row);
+              }
+
+              // Ensure image path is correct and from public/images
+              var imageUrl = `${url}${value.image}`;
+
+              var item = `<div class="col-md-3 mb-4">
+                  <div class="card h-100">
+                      <img src="${imageUrl}" class="card-img-top" alt="${value.description}">
+                      <div class="card-body">
+                          <h5 class="card-title">${value.item_name || value.description}</h5>
+                          <p class="card-text">₱ ${value.sell_price}</p>
+                          <p class="card-text"><small class="text-muted">Stock: ${value.quantity ?? 0}</small></p>
+                          <a href="#!" class="btn btn-primary show-details" role="button"
+                              data-id="${value.item_id}"
+                              data-name="${value.item_name || value.description}"
+                              data-description="${value.description}"
+                              data-price="${value.sell_price}"
+                              data-image="${value.image}"
+                              data-stock="${value.quantity ?? 0}">Details</a>
+                      </div>
+                  </div>
+              </div>`;
+              row.append(item);
+            });
+
+            // Append modal once
+            if ($('#productDetailsModal').length === 0) {
+              $('body').append(`
+                <div class="modal fade" id="productDetailsModal" tabindex="-1" role="dialog" aria-labelledby="productDetailsModalLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="productDetailsModalLabel"></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body text-center" id="productDetailsModalBody"></div>
+                    </div>
+                  </div>
+                </div>
+              `);
+            }
+
+            // Show product details
+            $(".show-details").on('click', function () {
+              const id = $(this).data('id');
+              const name = $(this).data('name');
+              const description = $(this).data('description');
+              const price = $(this).data('price');
+              const image = $(this).data('image');
+              const stock = $(this).data('stock');
+
+              $('#productDetailsModalLabel').text(name);
+              $('#productDetailsModalBody').html(`
+                <img src="${url}${image}" class="img-fluid mb-3" style="max-height:200px;">
+                <p class="mb-2"><strong>Description:</strong> ${description}</p>
+                <p id="price">Price: ₱<strong>${price}</strong></p>
+                <p>Stock: ${stock}</p>
+                <input type="number" class="form-control mb-3" id="detailsQty" min="1" max="${stock}" value="1">
+                <input type="hidden" id="detailsItemId" value="${id}">
+                <button type="button" class="btn btn-primary" id="detailsAddToCart">Add to Cart</button>
+              `);
+
+              $('#productDetailsModal').modal('show');
+            });
+          },
+          error: function (error) {
+            $("#items").append('<p class="text-danger">Failed to load items.</p>');
+            console.log(error);
+          }
+        });
+
+        // Add to cart
+        $(document).on('click', '#detailsAddToCart', function () {
+          const qty = parseInt($("#detailsQty").val());
+          const id = $("#detailsItemId").val();
+          const description = $("#productDetailsModalLabel").text();
+          const price = $("#productDetailsModalBody strong").text().replace(/[^\d.]/g, '');
+          const image = $("#productDetailsModalBody img").attr('src');
+          const stock = parseInt($("#productDetailsModalBody p:contains('Stock')").text().replace(/[^\d]/g, ''));
+          let cart = getCart();
+
+          let existing = cart.find(item => item.item_id == id);
+          if (existing) {
+            existing.quantity += qty;
+          } else {
+            cart.push({
+              item_id: id,
+              description,
+              price: parseFloat(price),
+              image,
+              stock,
+              quantity: qty
+            });
+          }
+
+          saveCart(cart);
+          itemCount++;
+          $('#itemCount').text(itemCount).css('display', 'block');
+          $('#productDetailsModal').modal('hide');
+          console.log(cart);
+        });
+      });
+    </script>
   </body>
 </html>

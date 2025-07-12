@@ -1,6 +1,6 @@
 $(document).ready(function () {
     const url = 'http://localhost:4000/';
-    const imageBasePath = '/js/images/';  // Base path for images
+    const imageBasePath = `${url}images/`;
     const imagePath = `${url}images/`;  // Full path for images
 
     // Load categories when page loads
@@ -51,13 +51,12 @@ $(document).ready(function () {
         columns: [
             { data: 'item_id' },
             {
-                data: 'image',
-                render: function (image) {
-                    if (!image) {
-                        return `<img src="${imageBasePath}default.jpg" width="50" height="60">`;
-                    }
-                    return `<img src="${imageBasePath}${image}" width="50" height="60" onerror="this.src='${imageBasePath}default.jpg'">`;
-                }
+                
+    data: 'image',
+    render: function (image) {
+        return `<img src="${imageBasePath}${image}" width="50" height="60" onerror="console.error('Image load failed')">`;
+    }
+
             },
             { data: 'item_name' },
             { data: 'description' },
@@ -227,6 +226,8 @@ $(document).ready(function () {
                         if (item.image) {
                             $("#iform").append(`<img src="${imageBasePath}${item.image}" width='200px' height='200px' id="itemImage" onerror="this.src='${imageBasePath}default.jpg'"/>`);
                         }
+                    }).catch(error => {
+                        console.error('Error loading categories:', error);
                     });
                 } else {
                     Swal.fire({

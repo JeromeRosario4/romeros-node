@@ -1,211 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>Login</title>
-  
-    <!-- Latest compiled and minified CSS -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
-      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-      crossorigin="anonymous"
-    />
- 
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.16.1/sweetalert2.css"
-      integrity="sha512-fjO3Vy3QodX9c6G9AUmr6WuIaEPdGRxBjD7gjatG5gGylzYyrEq3U0q+smkG6CwIY0L8XALRFHh4KPHig0Q1ug=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-    
-    <!-- JavaScript Libraries -->
-    <script
-      src="https://code.jquery.com/jquery-3.6.4.min.js"
-      integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8="
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
-      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
-      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-      crossorigin="anonymous"
-    ></script>
-   
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.16.1/sweetalert2.min.js"
-      integrity="sha512-LGHBR+kJ5jZSIzhhdfytPoEHzgaYuTRifq9g5l6ja6/k9NAOsAi5dQh4zQF6JIRB8cAYxTRedERUF+97/KuivQ=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    ></script>
+<head>
+  <meta charset="UTF-8">
+  <title>User Login</title>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<style>
+  body {
+  font-family: Arial, sans-serif;
+  background: #f2f2f2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
 
-    <link rel="stylesheet" href="/css/style.css" />
-  </head>
+.login-container {
+  background: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+}
 
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+#loginMsg {
+  margin-top: 15px;
+  text-align: center;
+  font-weight: bold;
+}
+
+p {
+  text-align: center;
+  margin-top: 20px;
+}
+
+a {
+  color: #007BFF;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+</style>
   <body>
-    <div id="loginBody"></div>
-    
-    <form id="loginForm" style="max-width: 400px; margin: auto">
+    <div class="login-container">
       <h2>Login</h2>
-      
-      <div class="form-group">
-        <label for="email">Email:</label>
-        <input
-          type="email"
-          class="form-control"
-          id="email"
-          name="email"
-          required
-        />
-      </div>
-      
-      <div class="form-group">
-        <label for="password">Password:</label>
-        <input
-          type="password"
-          class="form-control"
-          id="password"
-          name="password"
-          required
-        />
-      </div>
-      
-      <button
-        type="submit"
-        class="btn btn-primary btn-block"
-        id="loginBtn"
-      >
-        Login
-      </button>
-    </form>
-
+      <form id="loginForm">
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <button type="submit">Login</button>
+      </form>
+      <p id="loginMsg"></p>
+      <p>Don't have an account? <a href="register.html">Register here</a></p>
+    </div>
+  
     <script>
-      // Define your base URL
-      const url = 'http://localhost:4000/';
-      
-      // Validation functions
-      function validateEmail(email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
-      }
-
-      function validatePassword(password) {
-        return password.length >= 8;
-      }
-
-      function showError(inputId, message) {
-        const input = $('#' + inputId);
-        const errorDiv = $('<div class="text-danger small mt-1">').text(message);
-        input.addClass('is-invalid');
-        input.after(errorDiv);
-      }
-
-      function clearErrors() {
-        $('.is-invalid').removeClass('is-invalid');
-        $('.text-danger').remove();
-      }
-
-      $(document).ready(function () {
-        // Check if already logged in
-        const token = localStorage.getItem('token');
-        if (token) {
-          window.location.href = 'profile.html';
-        }
-
-        // Login handler
-        $("#loginBtn").on('click', function (e) {
-          e.preventDefault();
-          clearErrors();
-
-          const email = $("#email").val().trim();
-          const password = $("#password").val().trim();
-          
-          // Validation
-          if (!email) {
-            showError('email', 'Email is required');
-            return;
-          }
-          
-          if (!validateEmail(email)) {
-            showError('email', 'Please enter a valid email');
-            return;
-          }
-          
-          if (!password) {
-            showError('password', 'Password is required');
-            return;
-          }
-          
-          if (!validatePassword(password)) {
-            showError('password', 'Password must be at least 8 characters');
-            return;
-          }
-
-          const user = { email, password };
-          
-          $.ajax({
-            method: "POST",
-            url: url + "api/v1/login",
-            data: JSON.stringify(user),
-            contentType: 'application/json',
-            dataType: "json",
-            success: function (response) {
-              if (response.token && response.user) {
-                // Store token and user data
-                localStorage.setItem('token', response.token);
-                localStorage.setItem('userId', response.user.id);
-                
-                Swal.fire({
-                  icon: 'success',
-                  title: 'Login Successful',
-                  showConfirmButton: false,
-                  timer: 1500
-                }).then(() => {
-                  window.location.href = 'profile.html';
-                });
-              } else {
-                Swal.fire({
-                  icon: 'error',
-                  title: 'Login Failed',
-                  text: response.message || 'Invalid server response'
-                });
-              }
-            },
-            error: function (xhr) {
-              let errorMsg = 'Login failed';
-              if (xhr.responseJSON && xhr.responseJSON.message) {
-                errorMsg = xhr.responseJSON.message;
-              }
-              Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: errorMsg
-              });
-            }
-          });
-        });
-
-        // Email validation on blur
-        $("#email").on('blur', function() {
-          const email = $(this).val().trim();
-          if (email && !validateEmail(email)) {
-            showError('email', 'Please enter a valid email');
-          }
-        });
-
-        // Password validation on blur
-        $("#password").on('blur', function() {
-          const password = $(this).val().trim();
-          if (password && !validatePassword(password)) {
-            showError('password', 'Password must be at least 8 characters');
+      $('#loginForm').on('submit', function(e) {
+        e.preventDefault();
+        const formData = {
+          email: $('input[name="email"]').val(),
+          password: $('input[name="password"]').val()
+        };
+  
+        $.ajax({
+          url: 'http://localhost:4000/api/v1/login',
+          method: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify(formData),
+          success: function(res) {
+  $('#loginMsg').text('✅ Login successful!').css('color', 'green');
+  localStorage.setItem('token', res.token);
+  localStorage.setItem('userId', res.user.id); // Save user_id for use in profile
+  window.location.href = 'profile.html'; // Redirect to profile page
+          },
+          error: function(err) {
+            $('#loginMsg').text('❌ Login failed. Check your credentials.').css('color', 'red');
+            console.log(err);
           }
         });
       });
     </script>
   </body>
-</html>
+  </html>
