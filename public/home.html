@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Home</title>
+    <title>ROMEROS</title>
 
     <!-- Bootstrap CSS -->
     <link
@@ -19,7 +19,431 @@
       referrerpolicy="no-referrer"
     />
 
-    <link rel="stylesheet" href="css/style.css" />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      crossorigin="anonymous"
+    />
+
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+
+      :root {
+        --primary-blue: #2563eb;
+        --primary-purple: #7c3aed;
+        --dark-blue: #1e40af;
+        --dark-purple: #6d28d9;
+        --light-blue: #dbeafe;
+        --light-purple: #e9d5ff;
+        --gradient-primary: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+        --gradient-secondary: linear-gradient(135deg, var(--dark-blue), var(--dark-purple));
+        --gradient-light: linear-gradient(135deg, var(--light-blue), var(--light-purple));
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Orbitron', monospace;
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        color: white;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      /* Animated Background */
+      body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: 
+          radial-gradient(circle at 20% 80%, rgba(120, 58, 237, 0.15) 0%, transparent 50%),
+          radial-gradient(circle at 80% 20%, rgba(37, 99, 235, 0.15) 0%, transparent 50%);
+        animation: backgroundFloat 20s ease-in-out infinite;
+        z-index: -1;
+      }
+
+      @keyframes backgroundFloat {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-20px); }
+      }
+
+      /* Header Styles */
+      #header {
+        background: var(--gradient-primary);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+      }
+
+      /* Main Container */
+      .main-container {
+        margin-top: 2rem;
+        padding: 0 1rem;
+      }
+
+      /* Hero Section */
+      .hero-section {
+        text-align: center;
+        padding: 3rem 0;
+        background: var(--gradient-light);
+        border-radius: 20px;
+        margin-bottom: 3rem;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--gradient-primary);
+        opacity: 0.1;
+        border-radius: 20px;
+      }
+
+      .hero-title {
+        font-size: 3rem;
+        font-weight: 900;
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        position: relative;
+        z-index: 1;
+      }
+
+      .hero-subtitle {
+        font-size: 1.2rem;
+        color: var(--dark-blue);
+        margin-bottom: 2rem;
+        position: relative;
+        z-index: 1;
+      }
+
+      .robot-icon {
+        font-size: 4rem;
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: robotFloat 3s ease-in-out infinite;
+        position: relative;
+        z-index: 1;
+      }
+
+      @keyframes robotFloat {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        50% { transform: translateY(-10px) rotate(5deg); }
+      }
+
+      /* Filter Section */
+      .filter-section {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .filter-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: white;
+        text-align: center;
+      }
+
+      .filter-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: center;
+      }
+
+      .filter-btn {
+        background: var(--gradient-primary);
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 25px;
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        letter-spacing: 0.5px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .filter-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        transition: left 0.5s;
+      }
+
+      .filter-btn:hover::before {
+        left: 100%;
+      }
+
+      .filter-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+      }
+
+      .filter-btn.active {
+        background: var(--gradient-secondary);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+      }
+
+      /* Product Cards */
+      .product-card {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 15px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+        height: 100%;
+        position: relative;
+      }
+
+      .product-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--gradient-primary);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: 1;
+      }
+
+      .product-card:hover::before {
+        opacity: 0.05;
+      }
+
+      .product-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        border-color: var(--primary-purple);
+      }
+
+      .product-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        position: relative;
+        z-index: 2;
+      }
+
+      .product-body {
+        padding: 1.5rem;
+        position: relative;
+        z-index: 2;
+      }
+
+      .product-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: white;
+      }
+
+      .product-price {
+        font-size: 1.5rem;
+        font-weight: 900;
+        color: var(--primary-purple);
+        margin-bottom: 0.5rem;
+      }
+
+      .product-stock {
+        font-size: 0.9rem;
+        color: #94a3b8;
+        margin-bottom: 1rem;
+      }
+
+      .product-btn {
+        background: var(--gradient-primary);
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 25px;
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        letter-spacing: 0.5px;
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .product-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        transition: left 0.5s;
+      }
+
+      .product-btn:hover::before {
+        left: 100%;
+      }
+
+      .product-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+      }
+
+      /* Modal Styles */
+      .modal-content {
+        background: var(--gradient-secondary);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 15px;
+        color: white;
+      }
+
+      .modal-header {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .modal-title {
+        font-weight: 700;
+        color: white;
+      }
+
+      .close {
+        color: white;
+        opacity: 0.8;
+      }
+
+      .close:hover {
+        color: white;
+        opacity: 1;
+      }
+
+      /* Categories Loading */
+      .categories-loading {
+        text-align: center;
+        padding: 1rem;
+        color: #94a3b8;
+      }
+
+      .categories-loading .loading-spinner {
+        width: 30px;
+        height: 30px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-top: 2px solid var(--primary-purple);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 10px;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .hero-title {
+          font-size: 2rem;
+        }
+        
+        .hero-subtitle {
+          font-size: 1rem;
+        }
+        
+        .robot-icon {
+          font-size: 3rem;
+        }
+        
+        .filter-buttons {
+          flex-direction: column;
+          align-items: center;
+        }
+        
+        .filter-btn {
+          width: 200px;
+        }
+      }
+
+      /* Loading Animation */
+      .loading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 200px;
+      }
+
+      .loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-top: 3px solid var(--primary-purple);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+
+      /* No Products Message */
+      .no-products {
+        text-align: center;
+        padding: 3rem;
+        color: #94a3b8;
+        font-size: 1.2rem;
+      }
+
+      .no-products i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        color: var(--primary-purple);
+      }
+
+      /* Error Message */
+      .error-message {
+        text-align: center;
+        padding: 2rem;
+        color: #ef4444;
+        font-size: 1.1rem;
+        background: rgba(239, 68, 68, 0.1);
+        border-radius: 10px;
+        border: 1px solid rgba(239, 68, 68, 0.3);
+      }
+
+      .error-message i {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+      }
+    </style>
 
     <!-- jQuery -->
     <script
@@ -47,14 +471,54 @@
   <body>
     <div id="header"></div>
 
-    <div class="container" id="items">
-      <h1 class="mb-4">Shop Products</h1>
+    <div class="container main-container">
+      <!-- Hero Section -->
+      <div class="hero-section">
+        <i class="fas fa-robot robot-icon"></i>
+        <h1 class="hero-title">ROMEROS</h1>
+        <p class="hero-subtitle">KINGDOM</p>
+      </div>
+
+      <!-- Filter Section -->
+      <div class="filter-section">
+        <h3 class="filter-title"><i class="fas fa-filter"></i> Filter by Category</h3>
+        <div class="filter-buttons" id="categoryFilters">
+          <div class="categories-loading">
+            <div class="loading-spinner"></div>
+            <p>Loading categories...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Products Section -->
+      <div id="products-section">
+        <div class="loading">
+          <div class="loading-spinner"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Details Modal -->
+    <div class="modal fade" id="productDetailsModal" tabindex="-1" role="dialog" aria-labelledby="productDetailsModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="productDetailsModalLabel"></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body text-center" id="productDetailsModalBody"></div>
+        </div>
+      </div>
     </div>
 
     <script>
       $(document).ready(function () {
         const url = 'http://localhost:4000/';
-        var itemCount = 0;
+        let allProducts = [];
+        let allCategories = [];
+        let currentCategory = 'all';
 
         const getCart = () => {
           let cart = localStorage.getItem('cart');
@@ -65,123 +529,392 @@
           localStorage.setItem('cart', JSON.stringify(cart));
         };
 
+        const getImageUrl = (product) => {
+          // Priority: item_images table (filtering out soft-deleted images) -> public/images -> fallback
+          if (product.item_images && product.item_images.length > 0) {
+            // Filter out soft-deleted images (where deleted_at is null)
+            const activeImages = product.item_images.filter(img => img.deleted_at === null);
+            if (activeImages.length > 0) {
+              return `${url}${activeImages[0].image_path}`;
+            }
+          }
+          if (product.image) {
+            return `${url}${product.image}`;
+          }
+          return `${url}public/images/placeholder-robot.png`;
+        };
+
+        const getCategoryIcon = (categoryName) => {
+          const name = categoryName.toLowerCase();
+          if (name.includes('electronic')) return 'fas fa-microchip';
+          if (name.includes('robot')) return 'fas fa-robot';
+          if (name.includes('accessor')) return 'fas fa-cog';
+          if (name.includes('part')) return 'fas fa-wrench';
+          if (name.includes('component')) return 'fas fa-puzzle-piece';
+          if (name.includes('tool')) return 'fas fa-tools';
+          if (name.includes('sensor')) return 'fas fa-satellite-dish';
+          if (name.includes('motor')) return 'fas fa-cogs';
+          if (name.includes('battery')) return 'fas fa-battery-half';
+          if (name.includes('wire') || name.includes('cable')) return 'fas fa-plug';
+          if (name.includes('servo')) return 'fas fa-cogs';
+          if (name.includes('controller')) return 'fas fa-gamepad';
+          if (name.includes('display') || name.includes('screen')) return 'fas fa-tv';
+          if (name.includes('power') || name.includes('supply')) return 'fas fa-plug';
+          if (name.includes('kit')) return 'fas fa-box';
+          return 'fas fa-cube'; // Default icon
+        };
+
+        const renderCategories = (categories) => {
+          const container = $('#categoryFilters');
+          container.empty();
+
+          // Add "All Products" button first
+          const allButton = `
+            <button class="filter-btn active" data-category="all" data-category-id="all">
+              <i class="fas fa-th"></i> All Products
+            </button>
+          `;
+          container.append(allButton);
+
+          // Add category buttons dynamically from database
+          if (categories && categories.length > 0) {
+            // Filter out soft-deleted categories (where deleted_at is not null)
+            const activeCategories = categories.filter(cat => cat.deleted_at === null);
+            
+            if (activeCategories.length === 0) {
+              container.append(`
+                <div class="error-message">
+                  <small><i class="fas fa-exclamation-triangle"></i> No active categories found</small>
+                </div>
+              `);
+              return;
+            }
+
+            $.each(activeCategories, function (index, category) {
+              const icon = getCategoryIcon(category.description);
+              const categoryButton = `
+                <button class="filter-btn" data-category="${category.description}" data-category-id="${category.category_id}">
+                  <i class="${icon}"></i> ${category.description}
+                </button>
+              `;
+              container.append(categoryButton);
+            });
+          } else {
+            container.append(`
+              <div class="error-message">
+                <small><i class="fas fa-exclamation-triangle"></i> No categories found in database</small>
+              </div>
+            `);
+          }
+        };
+
+        const renderProducts = (products) => {
+          const container = $('#products-section');
+          container.empty();
+
+          if (products.length === 0) {
+            container.html(`
+              <div class="no-products">
+                <i class="fas fa-robot"></i>
+                <p>No products found in this category</p>
+              </div>
+            `);
+            return;
+          }
+
+          let row;
+          $.each(products, function (key, product) {
+            if (key % 4 === 0) {
+              row = $('<div class="row"></div>');
+              container.append(row);
+            }
+
+            const imageUrl = getImageUrl(product);
+            const productName = product.item_name || product.description || 'Unknown Product';
+            const productPrice = product.sell_price || 0;
+            const productStock = product.quantity ?? 0;
+
+            const productCard = `
+              <div class="col-lg-3 col-md-6 col-sm-12 mb-4">
+                <div class="product-card">
+                  <img src="${imageUrl}" class="product-image" alt="${productName}" 
+                       onerror="this.src='${url}public/images/placeholder-robot.png'">
+                  <div class="product-body">
+                    <h5 class="product-title">${productName}</h5>
+                    <p class="product-price">₱${productPrice}</p>
+                    <p class="product-stock">
+                      <i class="fas fa-box"></i> Stock: ${productStock}
+                    </p>
+                    <button class="product-btn show-details" 
+                            data-id="${product.item_id}"
+                            data-name="${productName}"
+                            data-description="${product.description || productName}"
+                            data-price="${productPrice}"
+                            data-image="${imageUrl}"
+                            data-stock="${productStock}">
+                      <i class="fas fa-eye"></i> View Details
+                    </button>
+                  </div>
+                </div>
+              </div>
+            `;
+            row.append(productCard);
+          });
+        };
+
+        const filterProducts = (categoryId) => {
+          if (categoryId === 'all') {
+            renderProducts(allProducts);
+          } else {
+            const filtered = allProducts.filter(product => {
+              return product.category_id == categoryId;
+            });
+            renderProducts(filtered);
+          }
+        };
+
+        const showError = (container, message) => {
+          container.html(`
+            <div class="error-message">
+              <i class="fas fa-exclamation-triangle"></i>
+              <p>${message}</p>
+            </div>
+          `);
+        };
+
         // Load header
         $("#header").load("header.html");
 
-        // Fetch and render items
+        // Fetch categories from database
+        console.log('Fetching categories from:', `${url}api/v1/categories`);
+        $.ajax({
+          method: "GET",
+          url: `${url}api/v1/categories`,
+          dataType: 'json',
+          timeout: 10000,
+          success: function (data) {
+            console.log('Categories response:', data);
+            
+            // Handle different response formats
+            let categories = [];
+            if (data.rows) {
+              categories = data.rows;
+            } else if (Array.isArray(data)) {
+              categories = data;
+            } else if (data.data && Array.isArray(data.data)) {
+              categories = data.data;
+            }
+            
+            // Validate category data structure
+            if (categories.length > 0 && (!categories[0].hasOwnProperty('category_id') || !categories[0].hasOwnProperty('description'))) {
+              console.error('Category data missing required fields');
+              showError($('#categoryFilters'), 'Category data format is invalid');
+              return;
+            }
+            
+            allCategories = categories;
+            
+            console.log('Parsed categories:', allCategories);
+            renderCategories(allCategories);
+          },
+          error: function (xhr, status, error) {
+            console.error('Error loading categories:', {
+              status: status,
+              error: error,
+              responseText: xhr.responseText,
+              readyState: xhr.readyState
+            });
+            
+            // Show fallback with "All Products" only
+            $('#categoryFilters').html(`
+              <button class="filter-btn active" data-category="all" data-category-id="all">
+                <i class="fas fa-th"></i> All Products
+              </button>
+              <div class="error-message mt-2">
+                <small><i class="fas fa-exclamation-triangle"></i> Could not load categories from database</small>
+              </div>
+            `);
+          }
+        });
+
+        // Fetch products with item_images
+        console.log('Fetching products from:', `${url}api/v1/items`);
         $.ajax({
           method: "GET",
           url: `${url}api/v1/items`,
           dataType: 'json',
+          timeout: 15000,
           success: function (data) {
-            $("#items").empty();
-            let row;
-            $.each(data.rows, function (key, value) {
-              if (key % 4 === 0) {
-                row = $('<div class="row"></div>');
-                $("#items").append(row);
-              }
-
-              // Ensure image path is correct and from public/images
-              var imageUrl = `${url}${value.image}`;
-
-              var item = `<div class="col-md-3 mb-4">
-                  <div class="card h-100">
-                      <img src="${imageUrl}" class="card-img-top" alt="${value.description}">
-                      <div class="card-body">
-                          <h5 class="card-title">${value.item_name || value.description}</h5>
-                          <p class="card-text">₱ ${value.sell_price}</p>
-                          <p class="card-text"><small class="text-muted">Stock: ${value.quantity ?? 0}</small></p>
-                          <a href="#!" class="btn btn-primary show-details" role="button"
-                              data-id="${value.item_id}"
-                              data-name="${value.item_name || value.description}"
-                              data-description="${value.description}"
-                              data-price="${value.sell_price}"
-                              data-image="${value.image}"
-                              data-stock="${value.quantity ?? 0}">Details</a>
-                      </div>
-                  </div>
-              </div>`;
-              row.append(item);
-            });
-
-            // Append modal once
-            if ($('#productDetailsModal').length === 0) {
-              $('body').append(`
-                <div class="modal fade" id="productDetailsModal" tabindex="-1" role="dialog" aria-labelledby="productDetailsModalLabel" aria-hidden="true">
-                  <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h5 class="modal-title" id="productDetailsModalLabel"></h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
-                        </button>
-                      </div>
-                      <div class="modal-body text-center" id="productDetailsModalBody"></div>
-                    </div>
-                  </div>
-                </div>
-              `);
+            console.log('Products response:', data);
+            
+            // Handle different response formats
+            let products = [];
+            if (data.rows) {
+              products = data.rows;
+            } else if (Array.isArray(data)) {
+              products = data;
+            } else if (data.data && Array.isArray(data.data)) {
+              products = data.data;
             }
+            
+            allProducts = products;
+            
+            console.log('Parsed products:', allProducts);
+            
+            // Fetch item images for each product
+            if (allProducts.length > 0) {
+              const imagePromises = allProducts.map(product => {
+                return $.ajax({
+                  method: "GET",
+                  url: `${url}api/v1/item-images/${product.item_id}`,
+                  dataType: 'json',
+                  timeout: 5000
+                }).done(function(imageData) {
+                  let images = [];
+                  if (imageData.rows) {
+                    images = imageData.rows;
+                  } else if (Array.isArray(imageData)) {
+                    images = imageData;
+                  } else if (imageData.data && Array.isArray(imageData.data)) {
+                    images = imageData.data;
+                  }
+                  // Only store non-deleted images
+                  product.item_images = images.filter(img => img.deleted_at === null);
+                }).fail(function() {
+                  product.item_images = [];
+                });
+              });
 
-            // Show product details
-            $(".show-details").on('click', function () {
-              const id = $(this).data('id');
-              const name = $(this).data('name');
-              const description = $(this).data('description');
-              const price = $(this).data('price');
-              const image = $(this).data('image');
-              const stock = $(this).data('stock');
-
-              $('#productDetailsModalLabel').text(name);
-              $('#productDetailsModalBody').html(`
-                <img src="${url}${image}" class="img-fluid mb-3" style="max-height:200px;">
-                <p class="mb-2"><strong>Description:</strong> ${description}</p>
-                <p id="price">Price: ₱<strong>${price}</strong></p>
-                <p>Stock: ${stock}</p>
-                <input type="number" class="form-control mb-3" id="detailsQty" min="1" max="${stock}" value="1">
-                <input type="hidden" id="detailsItemId" value="${id}">
-                <button type="button" class="btn btn-primary" id="detailsAddToCart">Add to Cart</button>
-              `);
-
-              $('#productDetailsModal').modal('show');
-            });
+              // Wait for all image requests to complete
+              $.when.apply($, imagePromises).always(function() {
+                renderProducts(allProducts);
+              });
+            } else {
+              renderProducts(allProducts);
+            }
           },
-          error: function (error) {
-            $("#items").append('<p class="text-danger">Failed to load items.</p>');
-            console.log(error);
+          error: function (xhr, status, error) {
+            console.error('Error loading products:', {
+              status: status,
+              error: error,
+              responseText: xhr.responseText,
+              readyState: xhr.readyState
+            });
+            
+            showError($('#products-section'), 'Failed to load products from database. Please check your API connection.');
           }
         });
 
-        // Add to cart
+        // Category filter functionality
+        $(document).on('click', '.filter-btn', function() {
+          $('.filter-btn').removeClass('active');
+          $(this).addClass('active');
+          
+          const categoryId = $(this).data('category-id');
+          currentCategory = categoryId;
+          filterProducts(categoryId);
+        });
+
+        // Show product details
+        $(document).on('click', '.show-details', function () {
+          const id = $(this).data('id');
+          const name = $(this).data('name');
+          const description = $(this).data('description');
+          const price = $(this).data('price');
+          const image = $(this).data('image');
+          const stock = $(this).data('stock');
+
+          $('#productDetailsModalLabel').text(name);
+          $('#productDetailsModalBody').html(`
+            <img src="${image}" class="img-fluid mb-3" style="max-height:300px; border-radius: 10px;">
+            <p class="mb-2"><strong>Description:</strong> ${description}</p>
+            <p class="mb-2"><strong>Price:</strong> ₱<span id="modalPrice">${price}</span></p>
+            <p class="mb-3"><strong>Stock:</strong> ${stock}</p>
+            <div class="row">
+              <div class="col-md-6 mb-2">
+                <label for="detailsQty" class="form-label">Quantity:</label>
+                <input type="number" class="form-control" id="detailsQty" 
+                       min="1" max="${stock}" value="1" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: white;">
+              </div>
+              <div class="col-md-6 mb-2">
+                <label class="form-label">Total:</label>
+                <div class="form-control" id="totalPrice" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: white;">₱${price}</div>
+              </div>
+            </div>
+            <input type="hidden" id="detailsItemId" value="${id}">
+            <button type="button" class="btn product-btn mt-3" id="detailsAddToCart">
+              <i class="fas fa-cart-plus"></i> Add to Cart
+            </button>
+          `);
+
+          // Update total price when quantity changes
+          $('#detailsQty').on('input', function() {
+            const qty = parseInt($(this).val()) || 1;
+            const total = (qty * price).toFixed(2);
+            $('#totalPrice').text('₱' + total);
+          });
+
+          $('#productDetailsModal').modal('show');
+        });
+
+        // Add to cart functionality
         $(document).on('click', '#detailsAddToCart', function () {
-          const qty = parseInt($("#detailsQty").val());
+          const qty = parseInt($("#detailsQty").val()) || 1;
           const id = $("#detailsItemId").val();
-          const description = $("#productDetailsModalLabel").text();
-          const price = $("#productDetailsModalBody strong").text().replace(/[^\d.]/g, '');
+          const name = $("#productDetailsModalLabel").text();
+          const price = parseFloat($("#modalPrice").text());
           const image = $("#productDetailsModalBody img").attr('src');
           const stock = parseInt($("#productDetailsModalBody p:contains('Stock')").text().replace(/[^\d]/g, ''));
-          let cart = getCart();
 
+          if (qty > stock) {
+            Swal.fire({
+              title: 'Error!',
+              text: 'Quantity exceeds available stock!',
+              icon: 'error',
+              confirmButtonText: 'OK'
+            });
+            return;
+          }
+
+          let cart = getCart();
           let existing = cart.find(item => item.item_id == id);
+          
           if (existing) {
+            if (existing.quantity + qty > stock) {
+              Swal.fire({
+                title: 'Error!',
+                text: 'Adding this quantity would exceed available stock!',
+                icon: 'error',
+                confirmButtonText: 'OK'
+              });
+              return;
+            }
             existing.quantity += qty;
           } else {
             cart.push({
               item_id: id,
-              description,
-              price: parseFloat(price),
-              image,
-              stock,
+              description: name,
+              price: price,
+              image: image,
+              stock: stock,
               quantity: qty
             });
           }
 
           saveCart(cart);
-          itemCount++;
-          $('#itemCount').text(itemCount).css('display', 'block');
           $('#productDetailsModal').modal('hide');
-          console.log(cart);
+          
+          Swal.fire({
+            title: 'Success!',
+            text: `${name} has been added to your cart!`,
+            icon: 'success',
+            timer: 1500,
+            showConfirmButton: false
+          });
+
+          // Update cart count if header has cart counter
+          const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
+          $('#itemCount').text(cartCount).show();
         });
       });
     </script>
