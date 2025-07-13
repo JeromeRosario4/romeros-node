@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
@@ -11,6 +12,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.16.1/sweetalert2.css"
         integrity="sha512-fjO3Vy3QodX9c6G9AUmr6WuIaEPdGRxBjD7gjatG5gGylzYyrEq3U0q+smkG6CwIY0L8XALRFHh4KPHig0Q1ug=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"
         integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
@@ -24,72 +29,565 @@
         integrity="sha512-LGHBR+kJ5jZSIzhhdfytPoEHzgaYuTRifq9g5l6ja6/k9NAOsAi5dQh4zQF6JIRB8cAYxTRedERUF+97/KuivQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-    <title>Cart</title>
+    <title>ROMEROS | Cart</title>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            font-family: 'Orbitron', monospace;
+            color: #e0e6ed;
+            overflow-x: hidden;
+        }
+        
+        /* Animated background particles */
+        .bg-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #4a90e2;
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 1; }
+            50% { transform: translateY(-20px) rotate(180deg); opacity: 0.5; }
+        }
+        
+        .cart-container {
+            position: relative;
+            z-index: 2;
+            background: rgba(26, 26, 46, 0.95);
+            border: 1px solid #4a90e2;
+            border-radius: 20px;
+            box-shadow: 
+                0 0 30px rgba(74, 144, 226, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            margin: 2rem auto;
+            max-width: 1200px;
+            padding: 2rem;
+        }
+        
+        .cart-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+        
+        .robot-icon {
+            font-size: 3rem;
+            color: #4a90e2;
+            margin-bottom: 1rem;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .cart-header h1 {
+            color: #4a90e2;
+            font-weight: 800;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px rgba(74, 144, 226, 0.5);
+        }
+        
+        .cart-header p {
+            color: #8892b0;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+        }
+        
+        .cart-header::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #4a90e2, transparent);
+            border-radius: 2px;
+        }
+        
+        .cart-item {
+            background: rgba(22, 33, 62, 0.8);
+            border: 1px solid #364863;
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cart-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(74, 144, 226, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .cart-item:hover::before {
+            left: 100%;
+        }
+        
+        .cart-item:hover {
+            transform: translateY(-3px);
+            border-color: #4a90e2;
+            box-shadow: 0 10px 30px rgba(74, 144, 226, 0.2);
+        }
+        
+        .product-image {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 12px;
+            border: 2px solid #4a90e2;
+            box-shadow: 0 0 15px rgba(74, 144, 226, 0.3);
+        }
+        
+        .product-info {
+            flex-grow: 1;
+            margin-left: 1.5rem;
+        }
+        
+        .product-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #e0e6ed;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .product-price {
+            font-size: 1.3rem;
+            color: #4a90e2;
+            font-weight: 700;
+            text-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+        }
+        
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+        
+        .quantity-btn {
+            background: linear-gradient(45deg, #4a90e2, #357abd);
+            border: 1px solid #4a90e2;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1rem;
+            font-weight: bold;
+            box-shadow: 0 0 10px rgba(74, 144, 226, 0.3);
+        }
+        
+        .quantity-btn:hover {
+            background: linear-gradient(45deg, #357abd, #2a5f8f);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(74, 144, 226, 0.4);
+        }
+        
+        .quantity-btn:active {
+            transform: translateY(0);
+        }
+        
+        .quantity-input {
+            width: 70px;
+            text-align: center;
+            border: 2px solid #364863;
+            border-radius: 8px;
+            padding: 0.5rem;
+            font-weight: 600;
+            color: #e0e6ed;
+            background: rgba(22, 33, 62, 0.8);
+            font-family: 'Orbitron', monospace;
+        }
+        
+        .quantity-input:focus {
+            outline: none;
+            border-color: #4a90e2;
+            box-shadow: 0 0 10px rgba(74, 144, 226, 0.3);
+            background: rgba(22, 33, 62, 1);
+        }
+        
+        .remove-btn {
+            background: linear-gradient(45deg, #ff4757, #c44569);
+            border: 1px solid #ff4757;
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-left: 1rem;
+            box-shadow: 0 0 10px rgba(255, 71, 87, 0.3);
+        }
+        
+        .remove-btn:hover {
+            background: linear-gradient(45deg, #c44569, #a53860);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4);
+        }
+        
+        .subtotal {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #4a90e2;
+            margin-left: 1rem;
+            text-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+        }
+        
+        .cart-summary {
+            background: linear-gradient(135deg, rgba(74, 144, 226, 0.2), rgba(22, 33, 62, 0.8));
+            border: 1px solid #4a90e2;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 2rem;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(74, 144, 226, 0.2);
+        }
+        
+        .total-amount {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            color: #4a90e2;
+            text-shadow: 0 0 10px rgba(74, 144, 226, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        
+        .btn-continue {
+            background: rgba(74, 144, 226, 0.2);
+            border: 2px solid #4a90e2;
+            color: #4a90e2;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-family: 'Orbitron', monospace;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            box-shadow: 0 0 15px rgba(74, 144, 226, 0.2);
+        }
+        
+        .btn-continue:hover {
+            background: rgba(74, 144, 226, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(74, 144, 226, 0.3);
+            color: #4a90e2;
+            text-decoration: none;
+        }
+        
+        .btn-checkout {
+            background: linear-gradient(45deg, #4a90e2, #357abd);
+            border: 2px solid #4a90e2;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-weight: 700;
+            font-family: 'Orbitron', monospace;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(74, 144, 226, 0.4);
+        }
+        
+        .btn-checkout:hover {
+            background: linear-gradient(45deg, #357abd, #2a5f8f);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(74, 144, 226, 0.5);
+            color: white;
+        }
+        
+        .empty-cart {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #8892b0;
+        }
+        
+        .empty-cart .robot-icon {
+            font-size: 5rem;
+            margin-bottom: 2rem;
+            color: #364863;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .empty-cart h3 {
+            margin-bottom: 1rem;
+            color: #e0e6ed;
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .empty-cart p {
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .cart-item-enter {
+            animation: slideInLeft 0.5s ease-out;
+        }
+        
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .cart-item-leave {
+            animation: slideOutRight 0.3s ease-in;
+        }
+        
+        @keyframes slideOutRight {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+        }
+        
+        /* Glowing effect for important elements */
+        .glow {
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { box-shadow: 0 0 10px rgba(74, 144, 226, 0.4); }
+            to { box-shadow: 0 0 20px rgba(74, 144, 226, 0.6); }
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .cart-container {
+                margin: 1rem;
+                padding: 1rem;
+            }
+            
+            .cart-header h1 {
+                font-size: 2rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .btn-continue, .btn-checkout {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 
 <body>
+    <div class="bg-particles"></div>
+    
     <div id="header"></div>
+    
     <div class="container">
-        <h1>Your Cart</h1>
-        <div id="cartTable"></div>
-        <a href="home.html" class="btn btn-secondary mt-3">Continue Shopping</a>
-        <button id="checkoutBtn" class="btn btn-primary mt-3">Checkout</button>
+        <div class="cart-container">
+            <div class="cart-header">
+                <div class="robot-icon">🤖</div>
+                <h1>ROMEROS CART</h1>
+                <p>Your Robot Kingdom Awaits</p>
+            </div>
+            
+            <div id="cartItems"></div>
+            
+            <div id="cartSummary"></div>
+        </div>
     </div>
 
     <script>
     $(document).ready(function () {
         const url = 'http://localhost:4000/';
         
+        // Create animated background particles
+        function createParticles() {
+            const particleContainer = $('.bg-particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = $('<div class="particle"></div>');
+                particle.css({
+                    left: Math.random() * 100 + '%',
+                    top: Math.random() * 100 + '%',
+                    animationDelay: Math.random() * 6 + 's',
+                    animationDuration: (Math.random() * 3 + 3) + 's'
+                });
+                particleContainer.append(particle);
+            }
+        }
+        
         function getCart() {
-            let cart = localStorage.getItem('cart');
-            return cart ? JSON.parse(cart) : [];
+            let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            return cart;
         }
 
         function saveCart(cart) {
             localStorage.setItem('cart', JSON.stringify(cart));
+            window.dispatchEvent(new Event('cartUpdated'));
+        }
+
+        function updateQuantity(idx, newQuantity) {
+            let cart = getCart();
+            if (newQuantity <= 0) {
+                cart.splice(idx, 1);
+            } else {
+                cart[idx].quantity = parseInt(newQuantity);
+            }
+            saveCart(cart);
+            renderCart();
+        }
+
+        function removeItem(idx) {
+            let cart = getCart();
+            cart.splice(idx, 1);
+            saveCart(cart);
+            renderCart();
         }
 
         function renderCart() {
             let cart = getCart();
-            let html = '';
             let total = 0;
+            
             if (cart.length === 0) {
-                html = '<p>Your cart is empty.</p>';
-            } else {
-                html = `<table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Image</th>
-                            <th>Description</th>
-                            <th>Price</th>
-                            <th>Qty</th>
-                            <th>Subtotal</th>
-                            <th>Remove</th>
-                        </tr>
-                    </thead>
-                    <tbody>`;
-                cart.forEach((item, idx) => {
-                    let subtotal = item.price * item.quantity;
-                    total += subtotal;
-                    html += `<tr>
-                        <td><img src="${item.image}" width="60"></td>
-                        <td>${item.description}</td>
-                        <td>₱ ${item.price.toFixed(2)}</td>
-                        <td>${item.quantity}</td>
-                        <td>₱ ${(subtotal).toFixed(2)}</td>
-                        <td><button class="btn btn-danger btn-sm remove-item" data-idx="${idx}">&times;</button></td>
-                    </tr>`;
-                });
-                html += `</tbody></table>
-                    <h4>Total: ₱ ${total.toFixed(2)}</h4>`;
+                $('#cartItems').html(`
+                    <div class="empty-cart">
+                        <div class="robot-icon">🤖</div>
+                        <h3>Your Cart is Empty</h3>
+                        <p>Add some robots to your kingdom to get started</p>
+                    </div>
+                `);
+                $('#cartSummary').html('');
+                return;
             }
 
-            $('#cartTable').html(html);
+            let html = '';
+            cart.forEach((item, idx) => {
+                let subtotal = item.price * item.quantity;
+                total += subtotal;
+                
+                html += `
+                    <div class="cart-item cart-item-enter">
+                        <div class="d-flex align-items-center">
+                            <img src="${item.image}" alt="${item.description}" class="product-image">
+                            <div class="product-info">
+                                <div class="product-title">${item.description}</div>
+                                <div class="product-price">₱ ${item.price.toFixed(2)}</div>
+                                <div class="quantity-controls">
+                                    <button class="quantity-btn decrease-qty" data-idx="${idx}">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <input type="number" class="quantity-input" value="${item.quantity}" min="1" data-idx="${idx}">
+                                    <button class="quantity-btn increase-qty" data-idx="${idx}">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="subtotal">₱ ${subtotal.toFixed(2)}</div>
+                                <button class="remove-btn" data-idx="${idx}">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            $('#cartItems').html(html);
+
+            $('#cartSummary').html(`
+                <div class="cart-summary glow">
+                    <div class="total-amount">Total: ₱ ${total.toFixed(2)}</div>
+                    <div class="action-buttons">
+                        <a href="home.html" class="btn-continue">
+                            <i class="fas fa-arrow-left"></i> Continue Shopping
+                        </a>
+                        <button id="checkoutBtn" class="btn-checkout">
+                            <i class="fas fa-rocket"></i> Launch Order
+                        </button>
+                    </div>
+                </div>
+            `);
         }
 
         function getUserId() {
-            let userId = sessionStorage.getItem('userId');
-            return userId ?? '';
+            return sessionStorage.getItem('userId') || '';
         }
 
         const getToken = () => {
@@ -97,37 +595,99 @@
             if (!token) {
                 Swal.fire({
                     icon: 'warning',
+                    title: 'Authentication Required',
                     text: 'You must be logged in to access this page.',
-                    showConfirmButton: true
+                    confirmButtonColor: '#4a90e2',
+                    background: '#1a1a2e',
+                    color: '#e0e6ed'
                 }).then(() => {
                     window.location.href = 'login.html';
                 });
                 return;
             }
-            return JSON.parse(token)
+            return JSON.parse(token);
         }
 
-        $('#cartTable').on('click', '.remove-item', function () {
+        // Event handlers
+        $(document).on('click', '.decrease-qty', function () {
             let idx = $(this).data('idx');
             let cart = getCart();
-            cart.splice(idx, 1);
-            saveCart(cart);
-            renderCart();
+            let newQuantity = cart[idx].quantity - 1;
+            updateQuantity(idx, newQuantity);
         });
 
-        $('#header').load("header.html");
-
-        $('#checkoutBtn').on('click', function () {
-            itemCount = 0;
-            priceTotal = 0;
+        $(document).on('click', '.increase-qty', function () {
+            let idx = $(this).data('idx');
             let cart = getCart();
+            let newQuantity = cart[idx].quantity + 1;
+            updateQuantity(idx, newQuantity);
+        });
+
+        $(document).on('change', '.quantity-input', function () {
+            let idx = $(this).data('idx');
+            let newQuantity = parseInt($(this).val());
+            if (newQuantity < 1) {
+                newQuantity = 1;
+                $(this).val(1);
+            }
+            updateQuantity(idx, newQuantity);
+        });
+
+        $(document).on('click', '.remove-btn', function () {
+            let idx = $(this).data('idx');
+            let cart = getCart();
+            let item = cart[idx];
+            
+            Swal.fire({
+                title: 'Remove Robot?',
+                text: `Are you sure you want to remove "${item.description}" from your cart?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#ff4757',
+                cancelButtonColor: '#4a90e2',
+                confirmButtonText: 'Yes, remove it',
+                cancelButtonText: 'Cancel',
+                background: '#1a1a2e',
+                color: '#e0e6ed'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    removeItem(idx);
+                    Swal.fire({
+                        title: 'Removed!',
+                        text: 'Robot has been removed from your cart.',
+                        icon: 'success',
+                        timer: 1500,
+                        showConfirmButton: false,
+                        background: '#1a1a2e',
+                        color: '#e0e6ed'
+                    });
+                }
+            });
+        });
+
+        $(document).on('click', '#checkoutBtn', function () {
+            let cart = getCart();
+            
+            if (cart.length === 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Cart Empty',
+                    text: 'Please add robots to your cart before checkout.',
+                    confirmButtonColor: '#4a90e2',
+                    background: '#1a1a2e',
+                    color: '#e0e6ed'
+                });
+                return;
+            }
+
+            // Show loading
+            $(this).html('<span class="loading-spinner"></span> Processing...');
+            $(this).prop('disabled', true);
 
             const payload = JSON.stringify({
                 userId: getUserId(),
-                cart
+                cart: cart
             });
-            
-            console.log(payload);
             
             if (getUserId()) {
                 $.ajax({
@@ -137,26 +697,48 @@
                     dataType: "json",
                     processData: false,
                     contentType: 'application/json; charset=utf-8',
-                    // headers: {
-                    //     "Authorization": "Bearer " + getToken()
-                    // },
                     success: function (data) {
-                        console.log(data);
                         Swal.fire({
                             icon: "success",
+                            title: "Order Launched!",
                             text: data.message,
+                            confirmButtonColor: '#4a90e2',
+                            background: '#1a1a2e',
+                            color: '#e0e6ed'
+                        }).then(() => {
+                            localStorage.removeItem('cart');
+                            renderCart();
+                            window.dispatchEvent(new Event('cartUpdated'));
                         });
-                        localStorage.removeItem('cart');
-                        renderCart();
                     },
                     error: function (error) {
                         console.log(error);
+                        Swal.fire({
+                            icon: "error",
+                            title: "Order Failed",
+                            text: "There was an error processing your order. Please try again.",
+                            confirmButtonColor: '#4a90e2',
+                            background: '#1a1a2e',
+                            color: '#e0e6ed'
+                        });
+                    },
+                    complete: function () {
+                        $('#checkoutBtn').html('<i class="fas fa-rocket"></i> Launch Order');
+                        $('#checkoutBtn').prop('disabled', false);
                     }
                 });
             }
         });
 
+        // Initialize
+        createParticles();
+        $('#header').load("header.html");
         renderCart();
+        window.dispatchEvent(new Event('cartUpdated'));
+        
+        $(window).on('cartUpdated', function () {
+            renderCart();
+        });
     });
     </script>
 </body>

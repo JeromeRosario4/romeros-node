@@ -8,6 +8,7 @@
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
       crossorigin="anonymous"
     />
 
@@ -15,6 +16,7 @@
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.16.1/sweetalert2.css"
+      integrity="sha512-fjO3Vy3QodX9c6G9AUmr6WuIaEPdGRxBjD7gjatG5gGylzYyrEq3U0q+smkG6CwIY0L8XALRFHh4KPHig0Q1ug=="
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
@@ -520,6 +522,7 @@
         let allCategories = [];
         let currentCategory = 'all';
 
+        // Cart functions
         const getCart = () => {
           let cart = localStorage.getItem('cart');
           return cart ? JSON.parse(cart) : [];
@@ -527,6 +530,8 @@
 
         const saveCart = (cart) => {
           localStorage.setItem('cart', JSON.stringify(cart));
+          // Notify other pages that cart was updated
+          window.dispatchEvent(new Event('cartUpdated'));
         };
 
         const getImageUrl = (product) => {
@@ -912,9 +917,8 @@
             showConfirmButton: false
           });
 
-          // Update cart count if header has cart counter
-          const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
-          $('#itemCount').text(cartCount).show();
+          // Dispatch event to update cart count everywhere
+          window.dispatchEvent(new Event('cartUpdated'));
         });
       });
     </script>
