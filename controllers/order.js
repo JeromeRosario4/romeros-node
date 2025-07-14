@@ -1,113 +1,151 @@
-const connection = require('../config/database');
-const sendEmail = require('../utils/sendEmail');
+const db = require('../config/database'); // Your DB connection
 
-exports.createOrder = (req, res, next) => {
-    console.log(req.body,)
-    const { cart, user} = req.body;
-    console.log(cart, user)
+const getShippingOptions = (req, res) => {
+  const sql = `SELECT shipping_id, region, rate FROM shipping`;
 
-    const dateOrdered = new Date();
-    const dateShipped = new Date();
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error('Error fetching shipping options:', err);
+      return res.status(500).json({ success: false, message: 'Database error' });
+    }
 
-    connection.beginTransaction(err => {
+    res.json({ success: true, data: results });
+  });
+};
+
+// 🧾 Create an order
+const createOrder = (req, res) => {
+  const { customer_id, date_placed, shipping_id, status, items } = req.body;
+
+  if (!customer_id || !date_placed || !shipping_id || !items || !Array.isArray(items) || items.length === 0) {
+    return res.status(400).json({ success: false, message: 'Missing or invalid order data' });
+  }
+
+  // Start a transaction
+  db.beginTransaction(err => {
+    if (err) {
+      console.error('Transaction error:', err);
+      return res.status(500).json({ success: false, message: 'Database error' });
+    }
+
+    // Insert into orderinfo
+    const orderInfoSql = `
+      INSERT INTO orderinfo (customer_id, date_placed, shipping_id, status)
+      VALUES (?, ?, ?, ?)
+    `;
+
+    db.query(orderInfoSql, [customer_id, date_placed, shipping_id, status], (err, result) => {
+      if (err) {
+        return db.rollback(() => {
+          console.error('Insert orderinfo error:', err);
+          res.status(500).json({ success: false, message: 'Failed to create order' });
+        });
+      }
+
+      const orderinfo_id = result.insertId;
+
+      // Prepare orderline inserts
+      const orderlines = items.map(item => [orderinfo_id, item.id, item.quantity]);
+
+      const orderlineSql = 'INSERT INTO orderline (orderinfo_id, item_id, quantity) VALUES ?';
+
+      db.query(orderlineSql, [orderlines], (err) => {
         if (err) {
-            console.log(err);
-            return res.status(500).json({ error: 'Transaction error', details: err });
+          return db.rollback(() => {
+            console.error('Insert orderline error:', err);
+            res.status(500).json({ success: false, message: 'Failed to add order items' });
+          });
         }
 
-        // Get customer_id from userId
-        // const sql = 'SELECT customer_id FROM customer WHERE user_id = ?';
-        const sql = 'SELECT c.customer_id, u.email FROM customer c INNER JOIN users u ON u.id = c.user_id WHERE u.id = ?';
-        connection.execute(sql, [parseInt(user.id)], (err, results) => {
-            if (err || results.length === 0) {
-                return connection.rollback(() => {
-                    if (!res.headersSent) {
-                        res.status(500).json({ error: 'Customer not found', details: err });
-                    }
-                });
-            }
-
-            // const customer_id = results[0].customer_id;
-            const { customer_id, email } = results[0]
-
-            // Insert into orderinfo
-            const orderInfoSql = 'INSERT INTO orderinfo (customer_id, date_placed, date_shipped) VALUES (?, ?, ?)';
-            connection.execute(orderInfoSql, [customer_id, dateOrdered, dateShipped], (err, result) => {
-                if (err) {
-                    return connection.rollback(() => {
-                        if (!res.headersSent) {
-                            res.status(500).json({ error: 'Error inserting orderinfo', details: err });
-                        }
-                    });
-                }
-
-                const order_id = result.insertId;
-
-                // Insert each cart item into orderline
-                const orderLineSql = 'INSERT INTO orderline (orderinfo_id, item_id, quantity) VALUES (?, ?, ?)';
-                let errorOccurred = false;
-                let completed = 0;
-
-                if (cart.length === 0) {
-                    return connection.rollback(() => {
-                        if (!res.headersSent) {
-                            res.status(400).json({ error: 'Cart is empty' });
-                        }
-                    });
-                }
-
-                cart.forEach((item, idx) => {
-                    connection.execute(orderLineSql, [order_id, item.item_id, item.quantity], (err) => {
-                        if (err && !errorOccurred) {
-                            errorOccurred = true;
-                            return connection.rollback(() => {
-                                if (!res.headersSent) {
-                                    res.status(500).json({ error: 'Error inserting orderline', details: err });
-                                }
-                            });
-                        }
-
-
-                        completed++;
-
-                        if (completed === cart.length && !errorOccurred) {
-                            connection.commit(err => {
-                                if (err) {
-                                    return connection.rollback(() => {
-                                        if (!res.headersSent) {
-                                            res.status(500).json({ error: 'Commit error', details: err });
-                                        }
-                                    });
-                                }
-
-                                // const message = 'your order is being processed'
-                                // try {
-                                //     await sendEmail({
-                                //         email,
-                                //         subject: 'Order Success',
-                                //         message
-                                //     })
-                                // }
-                                // catch (emailErr) {
-
-                                //     console.log('Email error:', emailErr);
-                                // }
-
-                                if (!res.headersSent) {
-                                    res.status(201).json({
-                                        success: true,
-                                        order_id,
-                                        dateOrdered,
-                                        message: 'transaction complete',
-
-                                        cart
-                                    });
-                                }
-                            });
-                        }
-                    });
-                });
+        // Commit transaction
+        db.commit(err => {
+          if (err) {
+            return db.rollback(() => {
+              console.error('Commit error:', err);
+              res.status(500).json({ success: false, message: 'Failed to finalize order' });
             });
+          }
+
+          res.json({ success: true, message: 'Order created', orderinfo_id });
         });
+      });
     });
-}
+  });
+};
+
+// Placeholder if you have this in your project
+const getOrdersByCustomer = (req, res) => {
+    const customerId = req.params.customerId;
+
+    // Get orders + shipping info
+    const sql = `
+      SELECT 
+        o.orderinfo_id,
+        o.date_placed,
+        o.status,
+        s.region,
+        s.rate
+      FROM orderinfo o
+      JOIN shipping s ON o.shipping_id = s.shipping_id
+      WHERE o.customer_id = ?
+      ORDER BY o.date_placed DESC
+    `;
+  
+    db.query(sql, [customerId], (err, orders) => {
+      if (err) {
+        console.error("Error fetching orders:", err);
+        return res.status(500).json({ success: false, message: "Error fetching orders" });
+      }
+  
+      if (!orders.length) {
+        return res.json({ success: true, data: [] });
+      }
+  
+      // Get all order lines for these orders
+      const orderIds = orders.map(o => o.orderinfo_id);
+      const placeholders = orderIds.map(() => '?').join(',');
+  
+      const itemSql = `
+        SELECT 
+          ol.orderinfo_id,
+          i.item_name,
+          i.sell_price AS price,
+          ol.quantity
+        FROM orderline ol
+        JOIN item i ON i.item_id = ol.item_id
+        WHERE ol.orderinfo_id IN (${placeholders})
+      `;
+  
+      db.query(itemSql, [...orderIds], (err, orderItems) => {
+        if (err) {
+          console.error("Error fetching order items:", err);
+          return res.status(500).json({ success: false, message: "Error fetching items" });
+        }
+  
+        // Group items by orderinfo_id
+        const grouped = {};
+        orderItems.forEach(item => {
+          if (!grouped[item.orderinfo_id]) grouped[item.orderinfo_id] = [];
+          grouped[item.orderinfo_id].push({
+            item_name: item.item_name,
+            quantity: item.quantity,
+            price: item.price
+          });
+        });
+  
+        // Attach items to orders
+        const final = orders.map(order => ({
+          ...order,
+          items: grouped[order.orderinfo_id] || []
+        }));
+  
+        res.json({ success: true, data: final });
+      });
+    });
+  };
+
+module.exports = {
+  createOrder,
+  getOrdersByCustomer,
+  getShippingOptions
+};

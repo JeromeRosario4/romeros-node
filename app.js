@@ -5,10 +5,11 @@ const path = require('path');
 
 const items = require('./routes/item');
 const categories = require('./routes/category');
-const users = require('./routes/user'); // ✅ This already handles user routes
+const users = require('./routes/user'); 
 
 // const dashboard = require('./routes/dashboard')
-// const order = require('./routes/order')
+const order = require('./routes/order');
+const sendEmail = require('./utils/sendEmail');
 
 app.use(cors());
 app.use(express.json());
@@ -18,9 +19,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Use routes
 app.use('/api/v1', items);
 app.use('/api/v1', categories);
-app.use('/api/v1', users); // ✅ Already includes login, register, etc.
+app.use('/api/v1', users); 
 
 // app.use('/api/v1', dashboard);
-// app.use('/api/v1', order);
+app.use('/api/v1', order);
 
 module.exports = app;
