@@ -13,6 +13,7 @@
     
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
@@ -383,17 +384,17 @@
                         <a class="nav-link btn btn-hw mx-1" href="/register.html">REGISTER</a>
                     </li>
 
-                    <!-- Authenticated User Dropdown - Hidden by default -->
-                    <li class="nav-item dropdown d-none" id="user-dropdown">
-                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="/uploads/default.jpg" alt="Profile Image" class="rounded-circle profile-img" width="40" height="40" />
-                            <span class="ms-2 text-uppercase" id="username">USER</span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="/profile.html"><i class="bi bi-person-circle me-2"></i>PROFILE</a></li>
-                            <li><a class="dropdown-item" href="#" onclick="logoutUser()"><i class="bi bi-box-arrow-right me-2"></i>LOGOUT</a></li>
-                        </ul>
-                    </li>
+                   <!-- Authenticated User Dropdown - Visible only when logged in -->
+<!-- Authenticated User - Visible only when logged in -->
+<li class="nav-item d-flex align-items-center d-none" id="user-profile-area">
+    <a class="nav-link d-flex align-items-center" href="/profile.html">
+        <img src="/uploads/default.jpg" alt="Profile Image" class="rounded-circle profile-img" width="40" height="40" />
+        <span class="ms-2 text-uppercase" id="username">USER</span>
+    </a>
+    <button class="btn btn-hw-outline ms-3" onclick="logoutUser()">LOGOUT</button>
+</li>
+
+
                 </ul>
             </div>
         </div>
@@ -404,7 +405,7 @@
     <!-- Bootstrap Bundle (includes Popper) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script>
+ <script>
         // Cart functions
         function getCart() {
             let cart = localStorage.getItem('cart');
@@ -413,62 +414,67 @@
 
         function updateCartCount() {
             const cartItems = getCart();
-            // Calculate total quantity of all items in cart
             const totalItems = cartItems.reduce((total, item) => total + (item.quantity || 1), 0);
             $('#cart-count').text(totalItems);
         }
+
+        // Initialize cart count when page loads
+        $(document).ready(function() {
+            updateCartCount();
+            checkAuthStatus(); // Check auth status immediately when page loads
+        });
 
         // Listen for cart updates from other pages
         window.addEventListener('cartUpdated', function() {
             updateCartCount();
         });
 
-        // Initialize cart count when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            updateCartCount();
-            
-            // Also check auth status if needed
-            checkAuthStatus();
-        });
-
         function logoutUser() {
             localStorage.removeItem('token');
             localStorage.removeItem('userId');
+            localStorage.removeItem('userData');
             window.location.href = '/login.html';
         }
 
-        function checkAuthStatus() {
-            const token = localStorage.getItem('token');
-            const userId = localStorage.getItem('userId');
-            const isAuthenticated = token && userId;
-
-            if (isAuthenticated) {
-                // Hide guest links
-                $('#login-link, #register-link').addClass('d-none');
-                // Show user dropdown
-                $('#user-dropdown').removeClass('d-none');
-
-                // Fetch user data
-                $.get(`/api/users/customers/${userId}`, function (res) {
-                    if (res.success && res.data) {
-                        const data = res.data;
-                        const fullName = `${data.fname || ''} ${data.lname || ''}`.trim();
-                        $('#username').text(fullName || 'USER');
-                        if (data.image_path) {
-                            $('.profile-img').attr('src', `/${data.image_path}`);
-                        }
-                    }
-                }).fail(function() {
-                    // If user fetch fails, clear auth and show guest links
-                    logoutUser();
-                });
-            } else {
-                // Show guest links
-                $('#login-link, #register-link').removeClass('d-none');
-                // Hide user dropdown
-                $('#user-dropdown').addClass('d-none');
+        function displayUserProfile(userData) {
+            if (userData && userData.name) {
+                $('#username').text(userData.name.toUpperCase());
+            }
+            if (userData && userData.profileImage) {
+                $('.profile-img').attr('src', userData.profileImage);
             }
         }
+
+        function checkAuthStatus() {
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId');
+
+    if (token && userId) {
+        // User is logged in
+        $('#login-link, #register-link').addClass('d-none');
+        $('#user-profile-area').removeClass('d-none');
+
+        const userData = localStorage.getItem('userData');
+        if (userData) {
+            displayUserProfile(JSON.parse(userData));
+        } else {
+            const demoUser = {
+                id: userId,
+                name: "Ernesto Tolin",
+                email: "ernesto@example.com",
+                profileImage: "/uploads/default.jpg"
+            };
+            localStorage.setItem('userData', JSON.stringify(demoUser));
+            displayUserProfile(demoUser);
+        }
+    } else {
+        $('#login-link, #register-link').removeClass('d-none');
+        $('#user-profile-area').addClass('d-none');
+    }
+}
+
+        // Make sure auth status is checked on every page load
+        window.addEventListener('load', checkAuthStatus);
     </script>
 </body>
 </html>
